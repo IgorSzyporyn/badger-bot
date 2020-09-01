@@ -1,1 +1,1 @@
-export const PROJECT_ID: string = 'badger-bot'
+export const PROJECT_ID = 'badger-bot'
