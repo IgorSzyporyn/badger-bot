@@ -1,0 +1,82 @@
+{
+  "name": "badger-bot",
+  "version": "0.1.0",
+  "description": "A BOT for the Badger Squad on Discord",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "bin": {
+    "badger-bot": "dist/bin/main.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch -p src",
+    "build": "npm run build:pre && tsc -p src",
+    "build:pre": "rimraf dist",
+    "format": "prettier --write **/*.{js,ts}",
+    "test": "npm run test:lint && npm run test:types",
+    "test:types": "tsc --pretty --noEmit",
+    "test:lint": "eslint . --ext ts --ext js",
+    "github:release": "git push origin && git push origin --tags",
+    "github:commit-changelog": "git add CHANGELOG.md && git commit -m \"updated CHANGELOG.md\" --no-verify",
+    "changelog:major": "npm run changelog:clean && changelog -M && npm run github:commit-changelog",
+    "changelog:minor": "npm run changelog:clean && changelog -m && npm run github:commit-changelog",
+    "changelog:patch": "npm run changelog:clean && changelog -p && npm run github:commit-changelog",
+    "changelog:clean": "rimraf CHANGELOG.md",
+    "release:major": "npm run changelog:major && npm version major && npm run github:release && npm run build && npm publish",
+    "release:minor": "npm run changelog:minor && npm version minor && npm run github:release && npm run build && npm publish",
+    "release:patch": "npm run changelog:patch && npm version patch && npm run github:release && npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IgorSzyporyn/badger-bot.git"
+  },
+  "keywords": [
+    "nodejs",
+    "cli"
+  ],
+  "author": {
+    "name": "IgorSzyporyn",
+    "email": "igor.szyporyn@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IgorSzyporyn/badger-bot/issues"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.2",
+    "@types/node": "^14.6.2",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
+    "eslint": "^7.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "generate-changelog": "^1.8.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.13",
+    "prettier": "^2.1.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:types",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "*.@(js|ts)": [
+      "npm run test:lint",
+      "npm run format"
+    ]
+  }
+}
